@@ -24,9 +24,10 @@ describe("Bowling.getScore()", () => {
   });
 
   describe("when the throws are set to", () => {
+    const bowling = new Bowling();
+
     describe("all miss", () => {
       it("should return 0", () => {
-        const bowling = new Bowling();
         const throws = Array.from({ length: 20 }, () => 0);
         bowling.setThrows(throws);
 
@@ -38,7 +39,6 @@ describe("Bowling.getScore()", () => {
 
     describe("all 3", () => {
       it("should return the sum of the throw scores", () => {
-        const bowling = new Bowling();
         const throws = Array.from({ length: 20 }, () => 3);
         bowling.setThrows(throws);
 
@@ -50,7 +50,6 @@ describe("Bowling.getScore()", () => {
 
     describe("at least one spare", () => {
       it("should return the sum of the throw scores plus the throw score after the spare", () => {
-        const bowling = new Bowling();
         const throws = [5, 5, 1, ...Array.from({ length: 17 }, () => 0)];
         bowling.setThrows(throws);
 
@@ -62,7 +61,6 @@ describe("Bowling.getScore()", () => {
 
     describe("at least two spares", () => {
       it("should return the sum of the throw scores plus the throw score after the spare", () => {
-        const bowling = new Bowling();
         const throws = [5, 5, 5, 5, 1, ...Array.from({ length: 15 }, () => 0)];
         bowling.setThrows(throws);
 
@@ -74,7 +72,6 @@ describe("Bowling.getScore()", () => {
 
     describe("at least one strike", () => {
       it("should return the sum of the throw scores plus the two scores after the strike", () => {
-        const bowling = new Bowling();
         const throws = [10, 1, 2, ...Array.from({ length: 17 }, () => 0)];
         bowling.setThrows(throws);
 
@@ -86,7 +83,6 @@ describe("Bowling.getScore()", () => {
 
     describe("at least one strike and one spare", () => {
       it("should return the sum of the throw scores plus the extra scores from strike and spare", () => {
-        const bowling = new Bowling();
         const throws = [10, 5, 5, 1, ...Array.from({ length: 16 }, () => 0)];
         bowling.setThrows(throws);
 
@@ -98,7 +94,6 @@ describe("Bowling.getScore()", () => {
 
     describe("all spare", () => {
       it("should return the correct score", () => {
-        const bowling = new Bowling();
         const throws = Array.from({ length: 21 }, () => 5);
         bowling.setThrows(throws);
 
@@ -110,7 +105,6 @@ describe("Bowling.getScore()", () => {
 
     describe("all strike", () => {
       it("should return the correct score", () => {
-        const bowling = new Bowling();
         const throws = Array.from({ length: 22 }, () => 10);
         bowling.setThrows(throws);
 
