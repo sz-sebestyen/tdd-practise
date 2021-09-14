@@ -2,23 +2,27 @@ function parseThrow(char: string): number {
   return +char.replace("-", "0").replace("x", "10");
 }
 
+const maxFrameScore = 10;
+const numberOfFrames = 10;
+
+function parseFrame(frame: string): number[] {
+  if (frame === "-") return [0, 0];
+  else if (frame === "x") return [maxFrameScore];
+  else if (frame[1] === "/") {
+    const first = parseThrow(frame[0]);
+    return [first, maxFrameScore - first];
+  } else return frame.split("").map(parseThrow);
+}
+
+function parseFrames(frames: string[]): number[] {
+  return frames.map(parseFrame).flat();
+}
+
 export function parseBowlingGame(input: string): number[] {
   const inputAsArray = input.split(" ");
 
-  const frames = inputAsArray.slice(0, 10);
-  const extraFrames = inputAsArray.slice(10);
+  const frames = inputAsArray.slice(0, numberOfFrames);
+  const extraFrames = inputAsArray.slice(numberOfFrames);
 
-  return [
-    ...frames
-      .map((frame) => {
-        if (frame === "-") return [0, 0];
-        else if (frame === "x") return [10];
-        else if (frame[1] === "/") {
-          const first = parseThrow(frame[0]);
-          return [first, 10 - first];
-        } else return [parseThrow(frame[0]), parseThrow(frame[1])];
-      })
-      .flat(),
-    ...extraFrames.map((frame) => parseThrow(frame)),
-  ];
+  return [...parseFrames(frames), ...extraFrames.map(parseThrow)];
 }

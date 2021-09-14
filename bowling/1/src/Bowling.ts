@@ -6,9 +6,12 @@ export interface IBowlingScore {
   getScore(): number;
 }
 
+const maxFrameScore = 10;
+const numberOfFrames = 10;
+
 export class Bowling implements IBowlingThrows, IBowlingScore {
   private throwScores: number[] = [];
-  private frameScores: number[] = Array.from({ length: 10 }, () => 0);
+  private frameScores: number[] = Array.from({ length: numberOfFrames }, () => 0);
 
   setThrows(throwScores: number[]): void {
     this.throwScores = throwScores;
@@ -16,11 +19,11 @@ export class Bowling implements IBowlingThrows, IBowlingScore {
   }
 
   private isStrike(throwScore: number): boolean {
-    return throwScore === 10;
+    return throwScore === maxFrameScore;
   }
 
   private isSpareOrStrike(score: number): boolean {
-    return score >= 10;
+    return score >= maxFrameScore;
   }
 
   private countFrameScores(): void {
