@@ -24,10 +24,10 @@ describe("parseBowlingGame", () => {
       });
     });
 
-    describe("all number 5", () => {
-      it("should return an array of 21 5s", () => {
-        const input = "55 55 55 55 55 55 55 55 55 55 5";
-        const expected = Array.from({ length: 21 }, () => 5);
+    describe("all number 4", () => {
+      it("should return an array of 20 4s", () => {
+        const input = "44 44 44 44 44 44 44 44 44 44";
+        const expected = Array.from({ length: 20 }, () => 4);
 
         const result = parseBowlingGame(input);
 
@@ -76,6 +76,17 @@ describe("parseBowlingGame", () => {
       it("should return an array of 10 10s plus two zeros", () => {
         const input = "x x x x x x x x x x - -";
         const expected = [...Array.from({ length: 10 }, () => 10), 0, 0];
+
+        const result = parseBowlingGame(input);
+
+        expect(result).toEqual(expected);
+      });
+    });
+
+    describe("all spares", () => {
+      it("should return an array of the numbers", () => {
+        const input = "-/ 3/ 3/ 3/ 3/ 3/ 3/ 3/ 3/ 3/ x";
+        const expected = [0, 10, ...Array.from({ length: 9 }, () => [3, 7]).flat(), 10];
 
         const result = parseBowlingGame(input);
 
