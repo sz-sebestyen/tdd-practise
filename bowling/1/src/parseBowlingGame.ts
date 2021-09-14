@@ -16,7 +16,7 @@ export function parseBowlingGame(input: string): number[] {
         else if (frame[1] === "/") {
           const first = parseThrow(frame[0]);
           return [first, 10 - first];
-        } else return [+frame[0], +frame[1]];
+        } else return [parseThrow(frame[0]), parseThrow(frame[1])];
       })
       .flat(),
     ...extraFrames.map((frame) => parseThrow(frame)),

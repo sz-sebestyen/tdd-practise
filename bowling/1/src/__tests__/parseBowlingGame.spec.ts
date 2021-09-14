@@ -93,5 +93,16 @@ describe("parseBowlingGame", () => {
         expect(result).toEqual(expected);
       });
     });
+
+    describe("all misses but some mixed number and miss", () => {
+      it("should return an array of the numbers", () => {
+        const input = "-3 - - - - - - - - -";
+        const expected = [0, 3, ...Array.from({ length: 18 }, () => 0)];
+
+        const result = parseBowlingGame(input);
+
+        expect(result).toEqual(expected);
+      });
+    });
   });
 });
