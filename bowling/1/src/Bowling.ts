@@ -6,43 +6,63 @@ export interface IBowlingScore {
   getScore(): number;
 }
 
-const maxFrameScore = 10;
-const numberOfFrames = 10;
+class FrameScoreList {
+  readonly numberOfFrames = 10;
+  readonly maxFrameScore = 10;
+  readonly strikeSize = 1;
+  readonly spareAndOpenFrameSize = 2;
 
-export class Bowling implements IBowlingThrows, IBowlingScore {
-  private throwScores: number[] = [];
-  private frameScores: number[] = Array.from({ length: numberOfFrames }, () => 0);
+  constructor(private throwScores: number[]) {}
 
-  setThrows(throwScores: number[]): void {
-    this.throwScores = throwScores;
-    this.countFrameScores();
-  }
+  private isStrike = (throwIndex: number): boolean => this.throwScores[throwIndex] === this.maxFrameScore;
 
-  private isStrike(throwScore: number): boolean {
-    return throwScore === maxFrameScore;
-  }
+  private isSpareOrStrike = (throwIndex: number): boolean => this.getOpenFrameScore(throwIndex) >= this.maxFrameScore;
 
-  private isSpareOrStrike(score: number): boolean {
-    return score >= maxFrameScore;
-  }
+  private getOpenFrameScore = (throwIndex: number): number =>
+    this.throwScores[throwIndex] + this.throwScores[throwIndex + 1];
 
-  private countFrameScores(): void {
+  private getSpareOrStrikeScore = (throwIndex: number): number =>
+    this.getOpenFrameScore(throwIndex) + this.throwScores[throwIndex + 2];
+
+  private getFrameScore = (throwIndex: number): number =>
+    this.isSpareOrStrike(throwIndex) ? this.getSpareOrStrikeScore(throwIndex) : this.getOpenFrameScore(throwIndex);
+
+  private getFrameSize = (throwIndex: number): number =>
+    this.isStrike(throwIndex) ? this.strikeSize : this.spareAndOpenFrameSize;
+
+  [Symbol.iterator](): Iterator<number> {
+    let frameIndex = 0;
     let throwIndex = 0;
 
-    this.frameScores = this.frameScores.map<number>((): number => {
-      let score = this.throwScores[throwIndex] + this.throwScores[throwIndex + 1];
+    const next = () => {
+      const done = frameIndex >= this.numberOfFrames || !this.throwScores.length;
 
-      if (this.isSpareOrStrike(score)) {
-        score += this.throwScores[throwIndex + 2];
-      }
+      const value = this.getFrameScore(throwIndex);
 
-      throwIndex += this.isStrike(this.throwScores[throwIndex]) ? 1 : 2;
+      throwIndex += this.getFrameSize(throwIndex);
+      frameIndex++;
 
-      return score;
-    });
+      return { done, value };
+    };
+
+    return { next };
+  }
+}
+
+export class Bowling implements IBowlingThrows, IBowlingScore {
+  private frameScoreList = new FrameScoreList([]);
+
+  setThrows(throwScores: number[]): void {
+    this.frameScoreList = new FrameScoreList(throwScores);
   }
 
   getScore(): number {
-    return this.frameScores.reduce((sum, cur) => sum + cur);
+    let sum = 0;
+
+    for (const frameScore of this.frameScoreList) {
+      sum += frameScore;
+    }
+
+    return sum;
   }
 }
