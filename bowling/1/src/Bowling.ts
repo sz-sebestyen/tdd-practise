@@ -30,22 +30,13 @@ class FrameScoreList {
   private getFrameSize = (throwIndex: number): number =>
     this.isStrike(throwIndex) ? this.strikeSize : this.spareAndOpenFrameSize;
 
-  [Symbol.iterator](): Iterator<number> {
-    let frameIndex = 0;
-    let throwIndex = 0;
-
-    const next = () => {
-      const done = frameIndex >= this.numberOfFrames || !this.throwScores.length;
-
-      const value = this.getFrameScore(throwIndex);
-
-      throwIndex += this.getFrameSize(throwIndex);
-      frameIndex++;
-
-      return { done, value };
-    };
-
-    return { next };
+  *[Symbol.iterator](): Iterator<number> {
+    for (
+      let frameIndex = 0, throwIndex = 0;
+      frameIndex < this.numberOfFrames;
+      throwIndex += this.getFrameSize(throwIndex), frameIndex++
+    )
+      yield this.getFrameScore(throwIndex) || 0;
   }
 }
 
