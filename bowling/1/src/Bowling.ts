@@ -2,7 +2,11 @@ export interface IBowlingThrows {
   setThrows(throwScores: number[]): void;
 }
 
-export class Bowling implements IBowlingThrows {
+export interface IBowlingScore {
+  getScore(): number;
+}
+
+export class Bowling implements IBowlingThrows, IBowlingScore {
   private throwScores: number[] = [];
   private frameScores: number[] = Array.from({ length: 10 }, () => 0);
 

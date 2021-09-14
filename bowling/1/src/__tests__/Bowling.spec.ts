@@ -7,7 +7,7 @@ describe("Bowling", () => {
     expect(bowling.setThrows).toBeInstanceOf(Function);
   });
 
-  it("should have a getScore method", () => {
+  it("should implement IBowlingScore interface", () => {
     expect(bowling.getScore).toBeInstanceOf(Function);
   });
 });
