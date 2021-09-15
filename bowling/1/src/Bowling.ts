@@ -32,30 +32,30 @@ class IterableFrameScores {
   private getFrameSize = (throwIndex: number): number =>
     this.isStrike(throwIndex) ? IterableFrameScores.strikeSize : IterableFrameScores.spareAndOpenFrameSize;
 
+  private isNotTheEnd = (frameIndex: number): boolean => frameIndex < IterableFrameScores.numberOfFrames;
+
   *[Symbol.iterator](): Iterator<number> {
     for (
       let frameIndex = 0, throwIndex = 0;
-      frameIndex < IterableFrameScores.numberOfFrames;
-      throwIndex += this.getFrameSize(throwIndex), frameIndex++
+      this.isNotTheEnd(frameIndex);
+      frameIndex++, throwIndex += this.getFrameSize(throwIndex)
     )
       yield this.getFrameScore(throwIndex) || 0;
   }
 }
 
 export class Bowling implements IBowlingThrows, IBowlingScore {
-  private frameScoreList = new IterableFrameScores([]);
+  private iterableFrameScores = new IterableFrameScores([]);
 
   setThrows(throwScores: number[]): void {
-    this.frameScoreList = new IterableFrameScores(throwScores);
+    this.iterableFrameScores = new IterableFrameScores(throwScores);
   }
 
   getScore(): number {
-    let sum = 0;
+    let gameScore = 0;
 
-    for (const frameScore of this.frameScoreList) {
-      sum += frameScore;
-    }
+    for (const frameScore of this.iterableFrameScores) gameScore += frameScore;
 
-    return sum;
+    return gameScore;
   }
 }
