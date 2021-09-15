@@ -38,16 +38,20 @@ class IterableFrameScores {
 
 export class Bowling {
   private iterableFrameScores = new IterableFrameScores([]);
+  private score = 0;
 
-  setThrows(throwScores: number[]): void {
-    this.iterableFrameScores = new IterableFrameScores(throwScores);
-  }
-
-  getScore(): number {
+  private calculateScore(): void {
     let gameScore = 0;
 
     for (const frameScore of this.iterableFrameScores) gameScore += frameScore;
 
-    return gameScore;
+    this.score = gameScore;
   }
+
+  setThrows(throwScores: number[]): void {
+    this.iterableFrameScores = new IterableFrameScores(throwScores);
+    this.calculateScore();
+  }
+
+  getScore = (): number => this.score;
 }
