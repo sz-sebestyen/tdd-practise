@@ -1,13 +1,13 @@
-class Frame {
+class FrameStepper {
   static readonly maxFrameScore = 10;
   static readonly strikeSize = 1;
   static readonly spareAndOpenFrameSize = 2;
 
   constructor(private throws: number[]) {}
 
-  private isStrike = (): boolean => this.throws[0] === Frame.maxFrameScore;
+  private isStrike = (): boolean => this.throws[0] === FrameStepper.maxFrameScore;
 
-  private isSpareOrStrike = (): boolean => this.getOpenFrameScore() >= Frame.maxFrameScore;
+  private isSpareOrStrike = (): boolean => this.getOpenFrameScore() >= FrameStepper.maxFrameScore;
 
   private getOpenFrameScore = (): number => this.throws[0] + this.throws[1];
 
@@ -15,7 +15,12 @@ class Frame {
 
   getScore = (): number => (this.isSpareOrStrike() ? this.getSpareOrStrikeScore() : this.getOpenFrameScore());
 
-  getSize = (): number => (this.isStrike() ? Frame.strikeSize : Frame.spareAndOpenFrameSize);
+  private getSize = (): number => (this.isStrike() ? FrameStepper.strikeSize : FrameStepper.spareAndOpenFrameSize);
+
+  next = (): this => {
+    this.throws = this.throws.slice(this.getSize());
+    return this;
+  };
 }
 
 class IterableFrameScores {
@@ -27,9 +32,9 @@ class IterableFrameScores {
 
   *[Symbol.iterator](): Iterator<number> {
     for (
-      let frameIndex = 0, throwIndex = 0, frame = new Frame(this.throwScores);
+      let frameIndex = 0, frame = new FrameStepper(this.throwScores);
       this.isNotTheEnd(frameIndex);
-      frameIndex++, throwIndex += frame.getSize(), frame = new Frame(this.throwScores.slice(throwIndex))
+      frameIndex++, frame.next()
     )
       yield frame.getScore();
   }
