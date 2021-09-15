@@ -31,7 +31,7 @@ class IterableFrameScores {
       this.isNotTheEnd(frameIndex);
       frameIndex++, throwIndex += frame.getSize(), frame = new Frame(this.throwScores.slice(throwIndex))
     )
-      yield frame.getScore() || 0;
+      yield frame.getScore();
   }
 }
 
