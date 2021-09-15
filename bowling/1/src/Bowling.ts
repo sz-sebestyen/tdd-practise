@@ -7,16 +7,18 @@ export interface IBowlingScore {
 }
 
 class IterableFrameScores {
-  readonly numberOfFrames = 10;
-  readonly maxFrameScore = 10;
-  readonly strikeSize = 1;
-  readonly spareAndOpenFrameSize = 2;
+  static readonly numberOfFrames = 10;
+  static readonly maxFrameScore = 10;
+  static readonly strikeSize = 1;
+  static readonly spareAndOpenFrameSize = 2;
 
   constructor(private throwScores: number[]) {}
 
-  private isStrike = (throwIndex: number): boolean => this.throwScores[throwIndex] === this.maxFrameScore;
+  private isStrike = (throwIndex: number): boolean =>
+    this.throwScores[throwIndex] === IterableFrameScores.maxFrameScore;
 
-  private isSpareOrStrike = (throwIndex: number): boolean => this.getOpenFrameScore(throwIndex) >= this.maxFrameScore;
+  private isSpareOrStrike = (throwIndex: number): boolean =>
+    this.getOpenFrameScore(throwIndex) >= IterableFrameScores.maxFrameScore;
 
   private getOpenFrameScore = (throwIndex: number): number =>
     this.throwScores[throwIndex] + this.throwScores[throwIndex + 1];
@@ -28,12 +30,12 @@ class IterableFrameScores {
     this.isSpareOrStrike(throwIndex) ? this.getSpareOrStrikeScore(throwIndex) : this.getOpenFrameScore(throwIndex);
 
   private getFrameSize = (throwIndex: number): number =>
-    this.isStrike(throwIndex) ? this.strikeSize : this.spareAndOpenFrameSize;
+    this.isStrike(throwIndex) ? IterableFrameScores.strikeSize : IterableFrameScores.spareAndOpenFrameSize;
 
   *[Symbol.iterator](): Iterator<number> {
     for (
       let frameIndex = 0, throwIndex = 0;
-      frameIndex < this.numberOfFrames;
+      frameIndex < IterableFrameScores.numberOfFrames;
       throwIndex += this.getFrameSize(throwIndex), frameIndex++
     )
       yield this.getFrameScore(throwIndex) || 0;
