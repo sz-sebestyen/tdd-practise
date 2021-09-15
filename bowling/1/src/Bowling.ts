@@ -1,38 +1,37 @@
-class IterableFrameScores {
-  static readonly numberOfFrames = 10;
+class Frame {
   static readonly maxFrameScore = 10;
   static readonly strikeSize = 1;
   static readonly spareAndOpenFrameSize = 2;
 
+  constructor(private throws: number[]) {}
+
+  private isStrike = (): boolean => this.throws[0] === Frame.maxFrameScore;
+
+  private isSpareOrStrike = (): boolean => this.getOpenFrameScore() >= Frame.maxFrameScore;
+
+  private getOpenFrameScore = (): number => this.throws[0] + this.throws[1];
+
+  private getSpareOrStrikeScore = (): number => this.getOpenFrameScore() + this.throws[2];
+
+  getScore = (): number => (this.isSpareOrStrike() ? this.getSpareOrStrikeScore() : this.getOpenFrameScore());
+
+  getSize = (): number => (this.isStrike() ? Frame.strikeSize : Frame.spareAndOpenFrameSize);
+}
+
+class IterableFrameScores {
+  static readonly numberOfFrames = 10;
+
   constructor(private throwScores: number[]) {}
-
-  private isStrike = (throwIndex: number): boolean =>
-    this.throwScores[throwIndex] === IterableFrameScores.maxFrameScore;
-
-  private isSpareOrStrike = (throwIndex: number): boolean =>
-    this.getOpenFrameScore(throwIndex) >= IterableFrameScores.maxFrameScore;
-
-  private getOpenFrameScore = (throwIndex: number): number =>
-    this.throwScores[throwIndex] + this.throwScores[throwIndex + 1];
-
-  private getSpareOrStrikeScore = (throwIndex: number): number =>
-    this.getOpenFrameScore(throwIndex) + this.throwScores[throwIndex + 2];
-
-  private getFrameScore = (throwIndex: number): number =>
-    this.isSpareOrStrike(throwIndex) ? this.getSpareOrStrikeScore(throwIndex) : this.getOpenFrameScore(throwIndex);
-
-  private getFrameSize = (throwIndex: number): number =>
-    this.isStrike(throwIndex) ? IterableFrameScores.strikeSize : IterableFrameScores.spareAndOpenFrameSize;
 
   private isNotTheEnd = (frameIndex: number): boolean => frameIndex < IterableFrameScores.numberOfFrames;
 
   *[Symbol.iterator](): Iterator<number> {
     for (
-      let frameIndex = 0, throwIndex = 0;
+      let frameIndex = 0, throwIndex = 0, frame = new Frame(this.throwScores);
       this.isNotTheEnd(frameIndex);
-      frameIndex++, throwIndex += this.getFrameSize(throwIndex)
+      frameIndex++, throwIndex += frame.getSize(), frame = new Frame(this.throwScores.slice(throwIndex))
     )
-      yield this.getFrameScore(throwIndex) || 0;
+      yield frame.getScore() || 0;
   }
 }
 
