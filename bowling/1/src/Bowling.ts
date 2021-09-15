@@ -1,11 +1,3 @@
-export interface IBowlingThrows {
-  setThrows(throwScores: number[]): void;
-}
-
-export interface IBowlingScore {
-  getScore(): number;
-}
-
 class IterableFrameScores {
   static readonly numberOfFrames = 10;
   static readonly maxFrameScore = 10;
@@ -44,7 +36,7 @@ class IterableFrameScores {
   }
 }
 
-export class Bowling implements IBowlingThrows, IBowlingScore {
+export class Bowling {
   private iterableFrameScores = new IterableFrameScores([]);
 
   setThrows(throwScores: number[]): void {

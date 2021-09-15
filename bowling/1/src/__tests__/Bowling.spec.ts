@@ -3,11 +3,11 @@ import { Bowling } from "../Bowling";
 describe("Bowling", () => {
   const bowling = new Bowling();
 
-  it("should implement IBowlingThrows interface", () => {
+  it("should have a setThrows method", () => {
     expect(bowling.setThrows).toBeInstanceOf(Function);
   });
 
-  it("should implement IBowlingScore interface", () => {
+  it("should have a getScore method", () => {
     expect(bowling.getScore).toBeInstanceOf(Function);
   });
 });
