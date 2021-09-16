@@ -1,3 +1,40 @@
+class Bowling {
+  private iterableFrameScores = new IterableFrameScores([]);
+  private score = 0;
+
+  private calculateScore(): void {
+    let gameScore = 0;
+
+    for (const frameScore of this.iterableFrameScores) gameScore += frameScore;
+
+    this.score = gameScore;
+  }
+
+  setThrows(throwScores: number[]): void {
+    this.iterableFrameScores = new IterableFrameScores(throwScores);
+    this.calculateScore();
+  }
+
+  getScore = (): number => this.score;
+}
+
+class IterableFrameScores {
+  static readonly numberOfFrames = 10;
+
+  constructor(private throwScores: number[]) {}
+
+  private isNotTheEnd = (frameIndex: number): boolean => frameIndex < IterableFrameScores.numberOfFrames;
+
+  *[Symbol.iterator](): Iterator<number> {
+    for (
+      let frameIndex = 0, frame = new FrameStepper(this.throwScores);
+      this.isNotTheEnd(frameIndex);
+      frameIndex++, frame.next()
+    )
+      yield frame.getScore();
+  }
+}
+
 class FrameStepper {
   static readonly maxFrameScore = 10;
   static readonly strikeSize = 1;
@@ -23,39 +60,4 @@ class FrameStepper {
   };
 }
 
-class IterableFrameScores {
-  static readonly numberOfFrames = 10;
-
-  constructor(private throwScores: number[]) {}
-
-  private isNotTheEnd = (frameIndex: number): boolean => frameIndex < IterableFrameScores.numberOfFrames;
-
-  *[Symbol.iterator](): Iterator<number> {
-    for (
-      let frameIndex = 0, frame = new FrameStepper(this.throwScores);
-      this.isNotTheEnd(frameIndex);
-      frameIndex++, frame.next()
-    )
-      yield frame.getScore();
-  }
-}
-
-export class Bowling {
-  private iterableFrameScores = new IterableFrameScores([]);
-  private score = 0;
-
-  private calculateScore(): void {
-    let gameScore = 0;
-
-    for (const frameScore of this.iterableFrameScores) gameScore += frameScore;
-
-    this.score = gameScore;
-  }
-
-  setThrows(throwScores: number[]): void {
-    this.iterableFrameScores = new IterableFrameScores(throwScores);
-    this.calculateScore();
-  }
-
-  getScore = (): number => this.score;
-}
+export { Bowling };

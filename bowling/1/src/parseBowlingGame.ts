@@ -1,9 +1,19 @@
-function parseThrow(char: string): number {
-  return +char.replace("-", "0").replace("x", "10");
+const numberOfFrames = 10;
+
+function parseBowlingGame(input: string): number[] {
+  const inputAsArray = input.split(" ");
+
+  const frames = inputAsArray.slice(0, numberOfFrames);
+  const extraFrames = inputAsArray.slice(numberOfFrames);
+
+  return [...parseFrames(frames), ...extraFrames.map(parseThrow)];
+}
+
+function parseFrames(frames: string[]): number[] {
+  return frames.map(parseFrame).flat();
 }
 
 const maxFrameScore = 10;
-const numberOfFrames = 10;
 
 function parseFrame(frame: string): number[] {
   if (frame === "-") return [0, 0];
@@ -14,15 +24,8 @@ function parseFrame(frame: string): number[] {
   } else return frame.split("").map(parseThrow);
 }
 
-function parseFrames(frames: string[]): number[] {
-  return frames.map(parseFrame).flat();
+function parseThrow(char: string): number {
+  return +char.replace("-", "0").replace("x", "10");
 }
 
-export function parseBowlingGame(input: string): number[] {
-  const inputAsArray = input.split(" ");
-
-  const frames = inputAsArray.slice(0, numberOfFrames);
-  const extraFrames = inputAsArray.slice(numberOfFrames);
-
-  return [...parseFrames(frames), ...extraFrames.map(parseThrow)];
-}
+export { parseBowlingGame };
