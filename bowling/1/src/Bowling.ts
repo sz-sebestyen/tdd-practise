@@ -1,38 +1,25 @@
 class Bowling {
-  private iterableFrameScores = new IterableFrameScores([]);
+  static readonly numberOfFrames = 10;
   private score = 0;
+
+  private throwScores: number[] = [];
 
   private calculateScore(): void {
     let gameScore = 0;
+    const frameStepper = new FrameStepper(this.throwScores);
 
-    for (const frameScore of this.iterableFrameScores) gameScore += frameScore;
+    for (let frame = 0; frame < Bowling.numberOfFrames; frame++, frameStepper.next())
+      gameScore += frameStepper.getCurrentFrameScore();
 
     this.score = gameScore;
   }
 
   setThrows(throwScores: number[]): void {
-    this.iterableFrameScores = new IterableFrameScores(throwScores);
+    this.throwScores = throwScores;
     this.calculateScore();
   }
 
   getScore = (): number => this.score;
-}
-
-class IterableFrameScores {
-  static readonly numberOfFrames = 10;
-
-  constructor(private throwScores: number[]) {}
-
-  private isNotTheEnd = (frameIndex: number): boolean => frameIndex < IterableFrameScores.numberOfFrames;
-
-  *[Symbol.iterator](): Iterator<number> {
-    for (
-      let frameIndex = 0, frame = new FrameStepper(this.throwScores);
-      this.isNotTheEnd(frameIndex);
-      frameIndex++, frame.next()
-    )
-      yield frame.getScore();
-  }
 }
 
 class FrameStepper {
@@ -50,12 +37,14 @@ class FrameStepper {
 
   private getSpareOrStrikeScore = (): number => this.getOpenFrameScore() + this.throws[2];
 
-  getScore = (): number => (this.isSpareOrStrike() ? this.getSpareOrStrikeScore() : this.getOpenFrameScore());
+  private getCurrentFrameSize = (): number =>
+    this.isStrike() ? FrameStepper.strikeSize : FrameStepper.spareAndOpenFrameSize;
 
-  private getSize = (): number => (this.isStrike() ? FrameStepper.strikeSize : FrameStepper.spareAndOpenFrameSize);
+  getCurrentFrameScore = (): number =>
+    this.isSpareOrStrike() ? this.getSpareOrStrikeScore() : this.getOpenFrameScore();
 
   next = (): this => {
-    this.throws = this.throws.slice(this.getSize());
+    this.throws = this.throws.slice(this.getCurrentFrameSize());
     return this;
   };
 }
